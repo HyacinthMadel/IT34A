@@ -40,6 +40,8 @@ function logActivity($pdo, $user_id, $user_Email, $action, $status = 'success')
             $user_agent
         ]);
 
+        return $success
+
     } catch (PDOException $e) {
 
         error_log("Activity Log Error: " . $e->getMessage());
