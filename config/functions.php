@@ -6,4 +6,4 @@ funtion redirect($path){
 }
 
 
-?>
+?> 
