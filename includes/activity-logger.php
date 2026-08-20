@@ -33,7 +33,7 @@ function logActivity($pdo, $user_id, $user_Email, $action, $status = 'success')
 
         $stmt->execute([
             $user_id,
-            $email,
+            $user_Email,
             $action,
             $status,
             $ip,
