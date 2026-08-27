@@ -12,26 +12,25 @@ function logActivity(
 
         // Make sure an action was provided
         if (empty($action)) {
-            error_log("Activity Log Error: Activity action is empty.");
+            error_log('Activity Log Error: Activity action is empty.');
             return false;
         }
 
         // Only allow success or failure
-        if ($status !== 'success' && $status !== 'failure') {
-            $status = 'failure';
+        if (!in_array($status, ['success', 'failure'], true)) {
+            error_log('Activity Log Error: Invalid activity status.');
+            return false;
         }
 
         // Get user's IP address
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR']
-            ?? $_SERVER['REMOTE_ADDR']
-            ?? null;
+        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
-        // If multiple IPs exist, use the first one
-        if ($ip !== null && strpos($ip, ',') !== false) {
-            $ip = trim(explode(',', $ip)[0]);
+        // Validate IP address
+        if ($ip !== null && filter_var($ip, FILTER_VALIDATE_IP) === false) {
+            $ip = null;
         }
 
-        // activity_log_ip_address is VARCHAR(45)
+        // IP address is VARCHAR(45)
         if ($ip !== null) {
             $ip = substr(trim($ip), 0, 45);
         }
@@ -39,16 +38,16 @@ function logActivity(
         // Get browser/user-agent
         $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
 
-        // activity_log_user_agent is VARCHAR(255)
+        // User agent is VARCHAR(255)
         if ($user_agent !== null) {
             $user_agent = substr($user_agent, 0, 255);
         }
 
-        // user_id is INT(11)
-        if ($user_id === '' || $user_id === null) {
+        // user_id is VARCHAR(255)
+        if ($user_id === '') {
             $user_id = null;
         } else {
-            $user_id = (int) $user_id;
+            $user_id = (string) $user_id;
         }
 
         // user_email can be NULL
@@ -84,7 +83,7 @@ function logActivity(
             $user_id,
             $user_id === null
                 ? PDO::PARAM_NULL
-                : PDO::PARAM_INT
+                : PDO::PARAM_STR
         );
 
         // Email
@@ -133,13 +132,10 @@ function logActivity(
 
     } catch (PDOException $e) {
 
-        // Save error in PHP error log
         error_log(
-            "Activity Log Error: " . $e->getMessage()
+            'Activity Log Error: ' . $e->getMessage()
         );
 
         return false;
     }
 }
-
-?>
