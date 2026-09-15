@@ -1,95 +1,59 @@
 <?php
 
-require_once('config/config.php');
+require __DIR__ . '/config/config.php';
+require __DIR__ . '/config/functions.php';
 
-$user_id  = "root" ?? null;
-$user_email = "root" ?? null;
+if (isset($_SESSION['user_id'])) {
+    unset($_SESSION['user_id']);
+    unset($_SESSION['user_email']);
+    unset($_SESSION['user_username']);
+    unset($_SESSION['user_role']);
+}
 
-$buttons = [
-    'Login',
-    'Logout',
-    'Create Record',
-    'Update Record',
-    'Delete Record',
-    'View Record',
-    'Upload File',
-    'Download',
-    'Search',
-    'Generate Report'
-];
-
-?>
-
-<table border="1" cellpadding="11">
-
-    <tr>
-        <th>Action</th>
-        <th>Test</th>
-    </tr>
-
-    <?php foreach ($buttons as $button): ?>
-
-        <tr>
-            <td>
-                <?= htmlspecialchars($button, ENT_QUOTES, 'UTF-8') ?>
-            </td>
-
-            <td>
-                <form method="post">
-                    <input
-                        type="hidden"
-                        name="action"
-                        value="<?= htmlspecialchars($button, ENT_QUOTES, 'UTF-8') ?>"
-                    >
-
-                    <button type="submit">Test</button>
-                </form>
-            </td>
-        </tr>
-
-    <?php endforeach; ?>
-
-</table>
-
-<?php
+$error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $login = trim($_POST['login'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    $action = $_POST['action'] ?? '';
-
-    // Make sure the submitted action is valid
-    if (!in_array($action, $buttons, true)) {
-        echo '<p>Invalid activity action.</p>';
+    if (loginUser($pdo, $login, $password)) {
+        header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');
         exit;
     }
 
-    // Randomly generate success/failure for testing
-    $status = random_int(0, 1) === 1
-        ? 'success'
-        : 'failure';
-
-    $success = logActivity(
-        $pdo,
-        $user_id,
-        $user_email,
-        $action,
-        $status
-    );
-
-    if ($success) {
-
-        echo '<p>';
-        echo 'Activity: ' .
-            htmlspecialchars($action, ENT_QUOTES, 'UTF-8');
-        echo '<br>Status: ' .
-            htmlspecialchars($status, ENT_QUOTES, 'UTF-8');
-        echo '<br>Log inserted successfully.';
-        echo '</p>';
-
-    } else {
-
-        echo '<p>Failed to insert activity log.</p>';
-    }
+    $error = 'Invalid login credentials';
 }
+?> 
 
-?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+
+    <?php if ($error): ?>
+        <p><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
+
+    <h1>User Login</h1>
+
+    <form method="POST">
+        <label>Username or Email</label>
+        <input type="text" name="login" required>
+
+        <br>
+
+        <label>Password</label>
+        <input type="password" name="password" required>
+
+        <br>
+
+        <button type="submit">Sign In</button>
+    </form>
+
+</body>
+</html>
+<?php
