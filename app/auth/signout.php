@@ -1,9 +1,11 @@
 <?php
 
-require __DIR__ . '/../../config/config.php';
+session_start();
 
 session_unset();
 session_destroy();
 
-header('Location: /IT34A/index.php');
+header("Location: /it34a/index.php");
 exit;
+
+?>

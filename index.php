@@ -4,34 +4,72 @@ require __DIR__ . '/config/config.php';
 require __DIR__ . '/config/functions.php';
 
 if (isset($_SESSION['user_id'])) {
-    unset($_SESSION['user_id']);
-    unset($_SESSION['user_email']);
-    unset($_SESSION['user_username']);
-    unset($_SESSION['user_role']);
+    header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');
+    exit;
 }
 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $login = trim($_POST['login'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (loginUser($pdo, $login, $password)) {
-        header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');
-        exit;
-    }
+    if ($login === '' || $password === '') {
 
-    $error = 'Invalid login credentials';
+        $error = 'Invalid login credentials';
+
+        logActivity(
+            $pdo,
+            null,
+            $login,
+            'login',
+            'failed'
+        );
+
+    } else {
+
+        if (loginUser($pdo, $login, $password)) {
+
+            logActivity(
+                $pdo,
+                $_SESSION['user_id'],
+                $_SESSION['user_email'],
+                'login',
+                'success'
+            );
+
+            header(
+                'Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php'
+            );
+            exit;
+
+        } else {
+
+            $error = 'Invalid login credentials';
+
+            logActivity(
+                $pdo,
+                null,
+                $login,
+                'login',
+                'failed'
+            );
+        }
+    }
 }
-?> 
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 </head>
+
 <body>
 
     <?php if ($error): ?>
@@ -41,19 +79,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1>User Login</h1>
 
     <form method="POST">
+
         <label>Username or Email</label>
         <input type="text" name="login" required>
 
-        <br>
+        <br><br>
 
         <label>Password</label>
         <input type="password" name="password" required>
 
-        <br>
+        <br><br>
 
         <button type="submit">Sign In</button>
+
     </form>
 
 </body>
+
 </html>
-<?php
