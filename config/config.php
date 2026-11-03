@@ -6,11 +6,12 @@ require_once __DIR__ . '/../function/activity.php';
 require_once __DIR__ . '/../function/auth.php';
 require_once __DIR__ . '/../function/redirect.php';
 require_once __DIR__ . '/../function/sessions.php';
+require_once __DIR__ . '/../function/csrf.php';
 
 define('BASE_URL', 'http://localhost/it34a');
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'it34a');
+define('DB_NAME', 'it34a_lab_db');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 
