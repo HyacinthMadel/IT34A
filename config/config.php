@@ -9,14 +9,19 @@ require_once __DIR__ . '/../function/sessions.php';
 require_once __DIR__ . '/../function/csv.php';
 
 
+require_once __DIR__ . '/../vendor/autoload.php';
+$dotev = Dotenv\Dotenv: : createImmutable(__DIR__ . '/../');
+$dotev -> load();
+
+define('DB_HOST', $_ENV['DB_HOST'] ?? '');
+define('DB_NAME', $_ENV['DB_NAME'] ?? '');
+define('DB_USER', $_ENV['DB_USER'] ?? '');
+define('DB_PASS', $_ENV['DB_PASS'] ?? '');
+
 // Application URL
 define('BASE_URL', 'http://localhost/IT34A');
 
-// Database configuration
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'IT34_lb_db');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+
 
 $user_id = "root" ?? null;
 $user_email = "root" ?? null;
