@@ -10,8 +10,8 @@ require_once __DIR__ . '/../function/csv.php';
 
 
 require_once __DIR__ . '/../vendor/autoload.php';
-$dotev = Dotenv\Dotenv: : createImmutable(__DIR__ . '/../');
-$dotev -> load();
+$dotenv = Dotenv\Dotenv:: createImmutable(__DIR__ . '/../');
+$dotenv -> load();
 
 define('DB_HOST', $_ENV['DB_HOST'] ?? '');
 define('DB_NAME', $_ENV['DB_NAME'] ?? '');
@@ -20,9 +20,6 @@ define('DB_PASS', $_ENV['DB_PASS'] ?? '');
 
 // Application URL
 define('BASE_URL', 'http://localhost/IT34A');
-
-
-
 $user_id = "root" ?? null;
 $user_email = "root" ?? null;
 
