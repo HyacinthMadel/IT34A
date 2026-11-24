@@ -1,3 +1,4 @@
+
 CREATE TABLE IF NOT EXISTS activity_logs (
     activity_log_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(255),
@@ -13,19 +14,18 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     activity_log_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---Table #3 users table
+-- Table #3 users table
 
 CREATE TABLE IF NOT EXISTS users(
 
-    --Primary key for users table
-      user_id INT AUTO_INCREMENT PRIMARY KEY
+    -- Primary key for users table
+      user_id INT AUTO_INCREMENT PRIMARY KEY,
 
-    --Initial user details
+    -- Initial user details
     user_email VARCHAR(50) UNIQUE NOT NULL,
     user_username VARCHAR(20) UNIQUE NOT NULL,
     user_password VARCHAR(255) NOT NULL,
-    user_role ENUM('admin,''manager','user') NOT NULL DEFAULT 'user',
-
+    user_role ENUM('admin', 'manager', 'user') NOT NULL DEFAULT 'user',
 
     --User Created Timestamp default not null
 

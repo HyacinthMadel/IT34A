@@ -1,4 +1,3 @@
-
 <?php
 require_once __DIR__ . '/config/config.php';
 
@@ -14,7 +13,7 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    requiredCsrfToken();
+   
     $login = trim($_POST['login'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -77,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1>User Login</h1>
 
     <form method="POST">
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
         <label>User or email</label>
         <input type="text" name="login" required>
 
